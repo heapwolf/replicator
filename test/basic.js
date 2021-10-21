@@ -1,15 +1,15 @@
-const hypercore = require('hypercore')
+const Hypercore = require('hypercore')
 const ram = require('random-access-memory')
 const { get, append, test } = require('./helpers')
 
 test('basic', async function (t, replicator, clone) {
-  const core = hypercore(ram)
+  const core = new Hypercore(ram)
 
   replicator.add(core, { announce: true, lookup: false })
 
   await append(core, 'test')
 
-  const coreClone = hypercore(ram, core.key)
+  const coreClone = new Hypercore(ram, core.key)
 
   clone.add(coreClone, { lookup: true, announce: false })
 
@@ -17,8 +17,8 @@ test('basic', async function (t, replicator, clone) {
 })
 
 test('multi core swarm', async function (t, replicator, clone) {
-  const a = hypercore(ram)
-  const b = hypercore(ram)
+  const a = new Hypercore(ram)
+  const b = new Hypercore(ram)
 
   replicator.add(a, { announce: true, lookup: false })
   replicator.add(b, { announce: true, lookup: false })
@@ -26,8 +26,8 @@ test('multi core swarm', async function (t, replicator, clone) {
   await append(a, 'a test')
   await append(b, 'b test')
 
-  const aClone = hypercore(ram, a.key)
-  const bClone = hypercore(ram, b.key)
+  const aClone = new Hypercore(ram, a.key)
+  const bClone = new Hypercore(ram, b.key)
 
   clone.add(bClone, { lookup: true, announce: false })
   clone.add(aClone, { lookup: true, announce: false })
@@ -37,16 +37,16 @@ test('multi core swarm', async function (t, replicator, clone) {
 })
 
 test('multi core swarm higher latency', async function (t, replicator, clone) {
-  const a = hypercore(ram)
-  const b = hypercore(ram)
+  const a = new Hypercore(ram)
+  const b = new Hypercore(ram)
 
   replicator.add(a, { announce: true, lookup: false })
 
   await append(a, 'a test')
   await append(b, 'b test')
 
-  const aClone = hypercore(ram, a.key)
-  const bClone = hypercore(ram, b.key)
+  const aClone = new Hypercore(ram, a.key)
+  const bClone = new Hypercore(ram, b.key)
 
   clone.add(bClone, { lookup: true, announce: false })
   clone.add(aClone, { lookup: true, announce: false })

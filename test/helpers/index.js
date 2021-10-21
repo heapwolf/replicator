@@ -1,4 +1,4 @@
-const dht = require('dht-rpc')
+const DHT = require('dht-rpc')
 const tape = require('tape')
 const Replicator = require('../../')
 
@@ -34,16 +34,16 @@ function ready (core) {
 function test (msg, fn) {
   tape(msg, function (t) {
     return new Promise((resolve, reject) => {
-      const bootstraper = dht({ ephemeral: true })
+      const bootstrapper = DHT.bootstrapper(0, { ephemeral: true })
 
-      bootstraper.listen(0, async function () {
+      bootstrapper.on('listening', async function () {
         const replicators = [makeReplicator(), makeReplicator()]
 
         let missing = replicators.length
         for (const r of replicators) {
           r.on('close', () => {
             if (--missing > 0) return
-            bootstraper.destroy()
+            bootstrapper.destroy()
           })
         }
 
@@ -57,7 +57,7 @@ function test (msg, fn) {
         }
 
         function makeReplicator () {
-          const bootstrap = ['localhost:' + bootstraper.address().port]
+          const bootstrap = ['localhost:' + bootstrapper.address().port]
           return new Replicator({ bootstrap })
         }
       })

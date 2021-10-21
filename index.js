@@ -1,5 +1,5 @@
 const pump = require('pump')
-const hyperswarm = require('hyperswarm')
+const Hyperswarm = require('hyperswarm')
 const Protocol = require('hypercore-protocol')
 const { EventEmitter } = require('events')
 
@@ -26,7 +26,7 @@ module.exports = class Replicator extends EventEmitter {
   constructor (options = {}) {
     super()
 
-    this.swarm = hyperswarm({
+    this.swarm = new Hyperswarm({
       announceLocalAddress: !!options.announceLocalAddress,
       preferredPort: 49737,
       bootstrap: options.bootstrap,
